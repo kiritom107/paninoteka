@@ -9,11 +9,19 @@ var bodyParser = require('body-parser');
 // parse application/json, basically parse incoming Request Object as a JSON Object 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
+app.get('/api/orders', (req, res) => {
     res.send('Hello World!  +  questo è il primo get')
 
 })
+app.get('/', (req, res) => {
+  res.send('Hello World!  +  questo è il primo get')
 
+})
+app.get('/', (req, res) => {
+  res.send('Hello World!  +  questo è il primo get')
+
+})
+/*
 app.get('/2', (req, res) => {
     res.send('Hello World!  +  questo è il secondo  get')
 
@@ -31,7 +39,7 @@ app.put('/', (req, res) => {
   titolo="bertoli"
   res.send(titolo)
 });
-/*  questo --> non funziona
+/ questo --> non funziona
 app.patch('/', (req, res) => {
   titolo=titolo+ contatore +" modifica"
   contatore=contatore+1
