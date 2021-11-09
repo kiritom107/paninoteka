@@ -14,6 +14,11 @@ app.get('/', (req, res) => {
 
 })
 
+app.get('/2', (req, res) => {
+    res.send('Hello World!  +  questo è il secondo  get')
+
+})
+
 app.post('/', (req, res) => {
     if(titolo==null){
       res.send(titolo+" non esiste")
