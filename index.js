@@ -13,15 +13,15 @@ let contatore = 0;
 
 let rawdata = fs.readFileSync('panini.json');
 let student = JSON.parse(rawdata);
-console.log(student);
+console.log(rawdata);
 
 // eliminare array users ed accettare in input delle route solo il nome
 
 let orders = [{ userId: 1, date: new Date(), item: "Panino 1" }]; // farò push di ogni nuovo ordine qui dentro
 
-// validare il file panini.json e leggerlo
-// assegnare il suo contenuto ad una variabile
-// creare una route GET /api/items che restituisce tutti i panini del file 
+
+
+
 
 // editorconfig .editorconfig
 
@@ -30,12 +30,30 @@ app.use(bodyParser.json()); //il dato passato è di tipo json altrimineti non pu
 app.get("/api/orders", (req, res) => {
   res.send({ orders });
 });
-
-app.get("/api/orders/panini", (req, res) => {
-let rawdata = fs.readFileSync('panini.json');
-let student = JSON.parse(rawdata);
+// assegnare il suo contenuto ad una variabile
+// creare una route GET /api/items che restituisce tutti i panini del file
+app.get("/api/orders/items", (req, res) => {
+let data = fs.readFileSync('panini.json');
+let student = JSON.parse(data);
 res.send(student);
 
+});
+//una route per aggiungere un tipo di panino nel file json, quindi in questo caso sarà una post che salva nel file json
+app.post("/api/orders/items", (req, res) => {
+  const { Id, nome } = req.body;
+  if (!Id || !nome) {
+    res.status(400).send("Specificare utente ed articolo");
+  }
+
+  var newData = JSON.stringify({ Id, nome });
+  console.log(student.concact(newData));
+  fs.writeFile('panini.json', newData, err => {
+    
+
+      if(err) throw err;
+  
+      console.log("New data added");
+  })
 });
 
 app.post("/api/orders", (req, res) => {
@@ -51,7 +69,7 @@ app.post("/api/orders", (req, res) => {
   // con db scrivo nel DB
   orders.push(order);
 
-  res.send({ orders });
+  res.send({ student});
 });
 
 app.get("/api/orders/:userId", (req, res) => {
