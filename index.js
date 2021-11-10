@@ -1,38 +1,58 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require("express");
+const bodyParser = require("body-parser");
+const app = express();
+const port = 3000;
+
 let titolo = null;
 let contatore = 0;
-const user = [{ name: "sir", surname: "siso" }]
-const bodyParser = require('body-parser');
+const user = [
+  { id: 1, name: "john", surname: "doe" },
+  { id: 2, name: "Mario", surname: "Rossi" },
+];
+let orders = [{ userId: 1, date: new Date(), item: "Panino 1" }]; // farò push di ogni nuovo ordine qui dentro
 
-app.use(bodyParser.json()) //il dato passato è di tipo json altrimineti non puo leggerlo
-let utenti = [
-  {
-    nome: "mario",
-    cognome: "rossi",
-  }
-]
+// editorconfig .editorconfig
 
-app.get('/', (req, res) => {
-   
-})
+app.use(bodyParser.json()); //il dato passato è di tipo json altrimineti non puo leggerlo
 
-app.get('/api/orders/:id', (req, res) => {
-  let pos = req.params.id
-  res.send(utenti[pos])
-})
+app.get("/api/orders", (req, res) => {
+  res.send({ orders });
+});
 
 app.post("/api/orders", (req, res) => {
-  // console.log(req.body)   // serve per debug 
-  const utente = { nome, cognome } = req.body;
-  utenti[0] = utente
-  res.send(utenti[0])
-})
+  // ES6 destructuring objects or arrays
+  const { userId, item } = req.body;
+
+  if (!userId || !item) {
+    res.status(400).send("Specificare utente ed articolo");
+  }
+
+  const order = { userId, date: new Date(), item };
+
+  // con db scrivo nel DB
+  orders.push(order);
+
+  res.send({ orders });
+});
+
+app.get("/api/orders/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    res.status(400).send("Specifica un utente");
+  }
+
+  // filter
+  const userOrders = orders.filter((order) => {
+    return Number(order.userId) === Number(userId); // "1" => 1
+  });
+
+  res.send({ orders: userOrders });
+});
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+  console.log(`Example app listening at http://localhost:${port}`);
+});
 
 /*
 app.get('/:id', function (req, res) {       come ottenere valore dal id
