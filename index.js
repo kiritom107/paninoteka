@@ -5,11 +5,17 @@ const port = 3000;
 
 let titolo = null;
 let contatore = 0;
+
+// eliminare array users ed accettare in input delle route solo il nome
 const user = [
   { id: 1, name: "john", surname: "doe" },
   { id: 2, name: "Mario", surname: "Rossi" },
 ];
 let orders = [{ userId: 1, date: new Date(), item: "Panino 1" }]; // farò push di ogni nuovo ordine qui dentro
+
+// validare il file panini.json e leggerlo
+// assegnare il suo contenuto ad una variabile
+// creare una route GET /api/items che restituisce tutti i panini del file 
 
 // editorconfig .editorconfig
 
@@ -43,6 +49,16 @@ app.get("/api/orders/:userId", (req, res) => {
   }
 
   // filter
+
+
+  /*
+leverei utenti  e sistemare le route 
+aggiungere nome
+
+file panini .json  array di panini finti 
+
+come fare ottenere tutti panini legegre un fil json da un 
+  */
   const userOrders = orders.filter((order) => {
     return Number(order.userId) === Number(userId); // "1" => 1
   });
