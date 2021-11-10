@@ -15,10 +15,7 @@ let student = JSON.parse(rawdata);
 console.log(student);
 
 // eliminare array users ed accettare in input delle route solo il nome
-const user = [
-  { id: 1, name: "john", surname: "doe" },
-  { id: 2, name: "Mario", surname: "Rossi" },
-];
+
 let orders = [{ userId: 1, date: new Date(), item: "Panino 1" }]; // farò push di ogni nuovo ordine qui dentro
 
 // validare il file panini.json e leggerlo
