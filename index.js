@@ -4,12 +4,26 @@ const port = 3000
 let titolo = null;
 let contatore = 0;
 const user =[{name:"sir",surname:"siso"}]  
-var bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
-// calling body-parser to handle the Request Object from POST requests
-var bodyParser = require('body-parser');
-// parse application/json, basically parse incoming Request Object as a JSON Object 
-app.use(bodyParser.json());
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const utenti=[
+  {
+  nome: "mario",
+  cognome:"rossi",
+  }
+  ,
+  {
+    nome: "hima",
+    cognome:"rossi",
+  }
+  ,
+  {
+    nome: "om",
+    cognome:"rossi",
+  }
+
+]
 
 app.get('/api/orders', (req, res) => {
   res.send([{
@@ -18,19 +32,23 @@ app.get('/api/orders', (req, res) => {
     cognome:"rossi",
     ordine:"piadina"
   }])
+})
 
+app.get('/',(req,res)=>{
+  res.send("sono in root")
 })
-app.get('/api/orders-by-user', (req, res) => {
- res.send(req.body.id)
+
+app.get('/api/orders/:id', (req, res) => {
+  let pos = req.params.id
+  res.send(utenti[pos])
 })
-app.post("/", function(req,res){
- 
-});
+
+app.get('/:id', function (req, res) {
+  res.send(req.params.id)
+})
+
 app.post("/", (req, res,next,id) => {
-
-  res.send(req.body.nome)
-  res.send(req.body.cognome)
-  res.send(req.body.ordine)
+  utenti[0]=(req.body)
 })
 /*
 app.get('/2', (req, res) => {
