@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
+const fs = require('fs');
 const app = express();
 const port = 3000;
 
@@ -8,7 +9,7 @@ const port = 3000;
 let titolo = null;
 let contatore = 0;
 
-const fs = require('fs');
+
 
 let rawdata = fs.readFileSync('panini.json');
 let student = JSON.parse(rawdata);
@@ -28,6 +29,13 @@ app.use(bodyParser.json()); //il dato passato è di tipo json altrimineti non pu
 
 app.get("/api/orders", (req, res) => {
   res.send({ orders });
+});
+
+app.get("/api/orders/panini", (req, res) => {
+let rawdata = fs.readFileSync('panini.json');
+let student = JSON.parse(rawdata);
+res.send(student);
+
 });
 
 app.post("/api/orders", (req, res) => {
