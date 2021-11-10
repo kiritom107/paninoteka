@@ -1,10 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+
 const app = express();
 const port = 3000;
 
+
 let titolo = null;
 let contatore = 0;
+
+const fs = require('fs');
+
+let rawdata = fs.readFileSync('panini.json');
+let student = JSON.parse(rawdata);
+console.log(student);
 
 // eliminare array users ed accettare in input delle route solo il nome
 const user = [
