@@ -1,3 +1,6 @@
+//------------------------------------------------------------------------------------------------
+//dichiarazione variabili d'ambiente
+
 const express = require("express");
 const bodyParser = require("body-parser");
 
@@ -5,90 +8,84 @@ const fs = require("fs");
 const app = express();
 const port = 3000;
 
+app.use(bodyParser.json()); //il dato passato è di tipo json altrimenti non puo leggerlo
+
 let rawdata = fs.readFileSync("items.json");
-let student = JSON.parse(rawdata);
+let items = JSON.parse(rawdata);//items è un array che contiene id e nome dei panini
 
-// eliminare array users ed accettare in input delle route solo il nome
+rawdata = fs.readFileSync("orders.json");
+let orders = JSON.parse(rawdata);//items è un array che contiene id e nome dei panini
 
-let orders = [{ userId: 1, date: new Date(), item: "Panino 1" }]; // farò push di ogni nuovo ordine qui dentro
-
-// editorconfig .editorconfig
-
-app.use(bodyParser.json()); //il dato passato è di tipo json altrimineti non puo leggerlo
+//------------------------------------------------------------------------------------------------
+//resistuisce tutti gli ordini
 
 app.get("/api/orders", (req, res) => {
   res.send({ orders });
 });
 
-// assegnare il suo contenuto ad una variabile
-// creare una route GET /api/items che restituisce tutti i items del file
+//------------------------------------------------------------------------------------------------
+//inserisci un ordine nel array orders
+
+app.post("/api/orders", (req, res) => {
+    const { userId, item } = req.body; // ES6 destructuring objects or arrays
+    if (!userId || !item) {
+      res.status(400).send("Specificare utente ed articolo");
+    }
+    const newStudent = [...orders, { userId, item }]; 
+    fs.writeFile("orders.json", JSON.stringify(newStudent,null,1), (err) => {//writefile scrive i dati nel file orders.JSON
+        if (err) {
+          console.log("errore", err);
+          res.status(500).send("Errore durante la scrittura del file");
+        }
+        res.send({ orders: newStudent });
+      });
+  });
+  
+//------------------------------------------------------------------------------------------------
+//stampa tutti  gli ordini che ha fatto un solo cliente  
+
+app.get("/api/orders/:userId", (req, res) => {
+    const { userId } = req.params;
+    if (!userId) {
+      res.status(400).send("Specifica un utente");
+    }
+    const userOrders = orders.filter((order) => {//serve a filtrare gli ordini in base al id
+      return Number(order.userId) === Number(userId); // "1" => 1
+    });
+    res.send({ orders: userOrders });
+  });
+
+//------------------------------------------------------------------------------------------------ 
+//restituisce tutti i items del file
+
 app.get("/api/orders/items", (req, res) => {
-  let data = fs.readFileSync("items.json");
-  let student = JSON.parse(data);
-  res.send(student);
+  res.send(items);
 });
 
-//una route per aggiungere un tipo di panino nel file json, quindi in questo caso sarà una post che salva nel file json
+//------------------------------------------------------------------------------------------------
+//è una route per aggiungere un tipo di panino nel file items.json, 
+//quindi in questo caso sarà una post che salva nel file json
+
 app.post("/api/orders/items", (req, res) => {
-  const { id, nome } = req.body;
+  const { id, nome } = req.body;        //prendiamo id e nome dal body
   if (!id || !nome) {
-    res.status(400).send("Specificare utente ed articolo");
+    res.status(400).send("Specificare utente ed articolo"); //indica un errore
   }
-
-  //   student.push({ id, nome });
-  const newStudent = [...student, { id, nome }];
-
-  // ES6 destructuring array
-  fs.writeFile("items.json", JSON.stringify(newStudent), (err) => {
+    const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items 
+  fs.writeFile("items.json", JSON.stringify(newStudent,null,1), (err) => {//wriitefile scrive i dati nel file items.JSON
     if (err) {
       console.log("errore", err);
       res.status(500).send("Errore durante la scrittura del file");
     }
-
     res.send({ student: newStudent });
   });
 });
 
-app.post("/api/orders", (req, res) => {
-  // ES6 destructuring objects or arrays
-  const { userId, item } = req.body;
-
-  if (!userId || !item) {
-    res.status(400).send("Specificare utente ed articolo");
-  }
-
-  const order = { userId, date: new Date(), item };
-
-  // con db scrivo nel DB
-  orders.push(order);
-
-  res.send({ student });
-});
-
-app.get("/api/orders/:userId", (req, res) => {
-  const { userId } = req.params;
-
-  if (!userId) {
-    res.status(400).send("Specifica un utente");
-  }
-
-  // filter
-
-  /*
-    leverei utenti  e sistemare le route 
-    aggiungere nome
-
-    file items .json  array di items finti 
-
-    come fare ottenere tutti items legegre un fil json da un 
-  */
-  const userOrders = orders.filter((order) => {
-    return Number(order.userId) === Number(userId); // "1" => 1
-  });
-
-  res.send({ orders: userOrders });
-});
+//------------------------------------------------------------------------------------------------
+//parte la pagina sulla route principale.
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+//------------------------------------------------------------------------------------------------
