@@ -1,27 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const fs = require('fs');
+const fs = require("fs");
 const app = express();
 const port = 3000;
 
-
-let titolo = null;
-let contatore = 0;
-
-
-
-let rawdata = fs.readFileSync('panini.json');
+let rawdata = fs.readFileSync("items.json");
 let student = JSON.parse(rawdata);
-console.log(rawdata);
 
 // eliminare array users ed accettare in input delle route solo il nome
 
 let orders = [{ userId: 1, date: new Date(), item: "Panino 1" }]; // farò push di ogni nuovo ordine qui dentro
-
-
-
-
 
 // editorconfig .editorconfig
 
@@ -30,30 +19,34 @@ app.use(bodyParser.json()); //il dato passato è di tipo json altrimineti non pu
 app.get("/api/orders", (req, res) => {
   res.send({ orders });
 });
-// assegnare il suo contenuto ad una variabile
-// creare una route GET /api/items che restituisce tutti i panini del file
-app.get("/api/orders/items", (req, res) => {
-let data = fs.readFileSync('panini.json');
-let student = JSON.parse(data);
-res.send(student);
 
+// assegnare il suo contenuto ad una variabile
+// creare una route GET /api/items che restituisce tutti i items del file
+app.get("/api/orders/items", (req, res) => {
+  let data = fs.readFileSync("items.json");
+  let student = JSON.parse(data);
+  res.send(student);
 });
+
 //una route per aggiungere un tipo di panino nel file json, quindi in questo caso sarà una post che salva nel file json
 app.post("/api/orders/items", (req, res) => {
-  const { Id, nome } = req.body;
-  if (!Id || !nome) {
+  const { id, nome } = req.body;
+  if (!id || !nome) {
     res.status(400).send("Specificare utente ed articolo");
   }
 
-  var newData = JSON.stringify({ Id, nome });
-  console.log(student.concact(newData));
-  fs.writeFile('panini.json', newData, err => {
-    
+  //   student.push({ id, nome });
+  const newStudent = [...student, { id, nome }];
 
-      if(err) throw err;
-  
-      console.log("New data added");
-  })
+  // ES6 destructuring array
+  fs.writeFile("items.json", JSON.stringify(newStudent), (err) => {
+    if (err) {
+      console.log("errore", err);
+      res.status(500).send("Errore durante la scrittura del file");
+    }
+
+    res.send({ student: newStudent });
+  });
 });
 
 app.post("/api/orders", (req, res) => {
@@ -69,7 +62,7 @@ app.post("/api/orders", (req, res) => {
   // con db scrivo nel DB
   orders.push(order);
 
-  res.send({ student});
+  res.send({ student });
 });
 
 app.get("/api/orders/:userId", (req, res) => {
@@ -81,14 +74,13 @@ app.get("/api/orders/:userId", (req, res) => {
 
   // filter
 
-
   /*
-leverei utenti  e sistemare le route 
-aggiungere nome
+    leverei utenti  e sistemare le route 
+    aggiungere nome
 
-file panini .json  array di panini finti 
+    file items .json  array di items finti 
 
-come fare ottenere tutti panini legegre un fil json da un 
+    come fare ottenere tutti items legegre un fil json da un 
   */
   const userOrders = orders.filter((order) => {
     return Number(order.userId) === Number(userId); // "1" => 1
@@ -100,9 +92,3 @@ come fare ottenere tutti panini legegre un fil json da un
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
-
-/*
-app.get('/:id', function (req, res) {       come ottenere valore dal id
-  res.send(req.params.id)
-})
-*/
