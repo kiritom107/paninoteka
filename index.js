@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------------------------
 //dichiarazione variabili d'ambiente
 const { startMongoDB } = require("./services/db");
-const { Item } = require("./models/Item");   
+const { Item } = require("./models/Item");
 const { Order } = require("./models/order");
 
 const express = require("express");
@@ -21,6 +21,10 @@ let orders = JSON.parse(data); //items è un array che contiene id e nome dei pa
 
 startMongoDB();
 
+app.get("", (req, res) => {
+  res.send("Paninoteka is online!");
+});
+
 //------------------------------------------------------------------------------------------------
 //resistuisce tutti gli ordini
 
@@ -33,11 +37,11 @@ app.get("/api/orders", async (req, res) => {
 //aggiungi un ordine nel database
 
 app.post("/api/orders", async (req, res) => {
-  const { item,userName } = req.body; // ES6 destructuring objects or arrays
-  if (!item ) {
+  const { item, userName } = req.body; // ES6 destructuring objects or arrays
+  if (!item) {
     res.status(400).send("Specificare articolo");
   }
-  const orderModel = await new Order({ item ,userName});
+  const orderModel = await new Order({ item, userName });
   await orderModel.save();
   const order = await Order.find({});
   res.send({ order });
@@ -58,7 +62,7 @@ app.post("/api/orders", async (req, res) => {
 //------------------------------------------------------------------------------------------------
 //stampa tutti  gli ordini che ha fatto un solo cliente
 
-app.get("/api/orders/:userName",async (req, res) => {
+app.get("/api/orders/:userName", async (req, res) => {
   const { userName } = req.params;
   if (!userName) {
     res.status(400).send("Specifica un utente");
@@ -70,7 +74,7 @@ app.get("/api/orders/:userName",async (req, res) => {
 //------------------------------------------------------------------------------------------------
 //restituisce tutti gli items del dataBase
 
-app.get("/api/items", async(req, res) => {
+app.get("/api/items", async (req, res) => {
   const item = await Item.find({});
   res.send({ item });
 });
@@ -98,7 +102,6 @@ app.post("/api/items", async (req, res) => {
   //   }
   //   res.send({ student: newStudent });
   // });
-  
 });
 
 //------------------------------------------------------------------------------------------------
