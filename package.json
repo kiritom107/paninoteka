@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "env-cmd -f .env nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "mongoose": "^6.0.12"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "nodemon": "^2.0.14"
   }
 }

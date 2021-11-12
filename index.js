@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 
 const fs = require("fs");
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json()); //il dato passato è di tipo json altrimenti non puo leggerlo
 
@@ -104,8 +104,8 @@ app.post("/api/items", async (req, res) => {
 //------------------------------------------------------------------------------------------------
 //parte la pagina sulla route principale.
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Example app listening at http://localhost:${PORT}`);
 });
 
 //------------------------------------------------------------------------------------------------

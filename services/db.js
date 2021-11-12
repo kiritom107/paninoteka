@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const startMongoDB = async () => {
-  await mongoose.connect("mongodb://localhost:27017/Paninoteka");
+  await mongoose.connect(process.env.MONGO_URI);
   console.log("Mongo connected correctly!");
 };
 
