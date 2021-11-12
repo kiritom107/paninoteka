@@ -20,7 +20,6 @@ let data = fs.readFileSync("orders.json");
 let orders = JSON.parse(data); //items è un array che contiene id e nome dei panini
 
 startMongoDB();
-
 app.get("", (req, res) => {
   res.send("Paninoteka is online!");
 });
