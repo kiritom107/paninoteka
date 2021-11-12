@@ -1,5 +1,8 @@
 //------------------------------------------------------------------------------------------------
 //dichiarazione variabili d'ambiente
+const { startMongoDB } = require("./services/db");
+const { Item } = require("./models/Item");   
+const { Order } = require("./models/order");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -16,72 +19,86 @@ let items = JSON.parse(rawdata); //items è un array che contiene id e nome dei 
 let data = fs.readFileSync("orders.json");
 let orders = JSON.parse(data); //items è un array che contiene id e nome dei panini
 
+startMongoDB();
+
 //------------------------------------------------------------------------------------------------
 //resistuisce tutti gli ordini
 
-app.get("/api/orders", (req, res) => {
-  res.send({ orders });
+app.get("/api/orders", async (req, res) => {
+  const order = await Order.find({});
+  res.send({ order });
 });
 
 //------------------------------------------------------------------------------------------------
-//aggiungi un ordine nel array orders
+//aggiungi un ordine nel database
 
-app.post("/api/orders", (req, res) => {
-  const { userId, item } = req.body; // ES6 destructuring objects or arrays
-  if (!userId || !item) {
-    res.status(400).send("Specificare utente ed articolo");
+app.post("/api/orders", async (req, res) => {
+  const { item,userName } = req.body; // ES6 destructuring objects or arrays
+  if (!item ) {
+    res.status(400).send("Specificare articolo");
   }
-  const newStudent = [...orders, { userId, item }];
-  fs.writeFile("orders.json", JSON.stringify(newStudent, null, 1), (err) => {
-    //writefile scrive i dati nel file orders.JSON
-    if (err) {
-      console.log("errore", err);
-      res.status(500).send("Errore durante la scrittura del file");
-    }
-    res.send({ orders: newStudent });
-  });
+  const orderModel = await new Order({ item ,userName});
+  await orderModel.save();
+  const order = await Order.find({});
+  res.send({ order });
+  // const newStudent = [...orders, { userId, item }];
+  // fs.writeFile("orders.json", JSON.stringify(newStudent, null, 1), (err) => {
+  //   //writefile scrive i dati nel file orders.JSON
+  //   if (err) {
+  //     console.log("errore", err);
+  //     res.status(500).send("Errore durante la scrittura del file");
+  //   }
+
+  //  main()
+
+  // res.send({ userId, item });
+  // });
 });
 
 //------------------------------------------------------------------------------------------------
 //stampa tutti  gli ordini che ha fatto un solo cliente
 
-app.get("/api/orders/:userId", (req, res) => {
-  const { userId } = req.params;
-  if (!userId) {
+app.get("/api/orders/:userName",async (req, res) => {
+  const { userName } = req.params;
+  if (!userName) {
     res.status(400).send("Specifica un utente");
   }
-  const userOrders = orders.filter((order) => {
-    //serve a filtrare gli ordini in base al id
-    return Number(order.userId) === Number(userId); // "1" => 1
-  });
-  res.send({ orders: userOrders });
+  const order = await Order.find({ userName });
+  res.send({ order });
 });
 
 //------------------------------------------------------------------------------------------------
-//restituisce tutti i items del file
+//restituisce tutti gli items del dataBase
 
-app.get("/api/items", (req, res) => {
-  res.send({ items });
+app.get("/api/items", async(req, res) => {
+  const item = await Item.find({});
+  res.send({ item });
 });
 
 //------------------------------------------------------------------------------------------------
-//è una route per aggiungere un tipo di panino nel file items.json,
-//quindi in questo caso sarà una post che salva nel file json
+//è una route per aggiungere un tipo di panino nel dataBase paninoteka/item
+//quindi in questo caso sarà una post che salva nel dataBase
 
-app.post("/api/items", (req, res) => {
-  const { id, nome } = req.body; //prendiamo id e nome dal body
-  if (!id || !nome) {
-    res.status(400).send("Specificare utente ed articolo"); //indica un errore
+app.post("/api/items", async (req, res) => {
+  const { item } = req.body; //prendiamo nome dal body
+  if (!item) {
+    res.status(400).send("Specificare un rticolo"); //indica un errore
   }
-  const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items
-  fs.writeFile("items.json", JSON.stringify(newStudent, null, 1), (err) => {
-    //wriitefile scrive i dati nel file items.JSON
-    if (err) {
-      console.log("errore", err);
-      res.status(500).send("Errore durante la scrittura del file");
-    }
-    res.send({ student: newStudent });
-  });
+  const itemModel = await new Item({ item });
+  await itemModel.save();
+  const items = await Item.find({});
+  res.send({ items });
+
+  // const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items
+  // fs.writeFile("items.json", JSON.stringify(newStudent, null, 1), (err) => {
+  //   //wriitefile scrive i dati nel file items.JSON
+  //   if (err) {
+  //     console.log("errore", err);
+  //     res.status(500).send("Errore durante la scrittura del file");
+  //   }
+  //   res.send({ student: newStudent });
+  // });
+  
 });
 
 //------------------------------------------------------------------------------------------------
@@ -103,9 +120,3 @@ app.listen(port, () => {
 //      - dentro paninoteka avrete 2 collections:
 //          - orders
 //          - items
-
-const startMongo = async () => {
-    await setTimeout(() => {});
-};
-
-startMongo();
