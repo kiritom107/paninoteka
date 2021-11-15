@@ -6,6 +6,7 @@ const { Order } = require("./models/order");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const fs = require("fs");
 const app = express();
@@ -16,6 +17,7 @@ const cors = require('cors');
 app.use(cors({origin :'https://paninotekaclient.herokuapp.com/'}))
 
 app.use(bodyParser.json()); //il dato passato è di tipo json altrimenti non puo leggerlo
+app.use(cors());
 
 let rawdata = fs.readFileSync("items.json");
 let items = JSON.parse(rawdata); //items è un array che contiene id e nome dei panini
