@@ -8,9 +8,6 @@ const express = require("express");
 
 const bodyParser = require("body-parser");
 const cors = require('cors');
-app.use(cors({origins: 'https://paninoteka.herokuapp.com/'}))
-
-
 
 const fs = require("fs");
 const app = express();
@@ -28,8 +25,6 @@ startMongoDB();
 app.get("", (req, res) => {
   res.send("Paninoteka is online!");
 });
-
-
 
 //------------------------------------------------------------------------------------------------
 //resistuisce tutti gli ordini
