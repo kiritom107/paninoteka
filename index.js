@@ -7,6 +7,10 @@ const { Order } = require("./models/order");
 const express = require("express");
 
 const bodyParser = require("body-parser");
+const cors = require('cors');
+app.use(cors({origins: 'https://paninoteka.herokuapp.com/'}))
+
+
 
 const fs = require("fs");
 const app = express();
