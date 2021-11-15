@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 const cors = require('cors');
 
-app.use(cors({origin :'https://paninotekaclient.herokuapp.com/'}))
+app.use(cors({origin :'https://paninoteka.herokuapp.com/'}))
 
 app.use(bodyParser.json()); //il dato passato è di tipo json altrimenti non puo leggerlo
 app.use(cors());
