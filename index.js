@@ -46,7 +46,7 @@ app.post("/api/orders", async (req, res) => {
   const orderModel = await new Order({ item, userName });
   await orderModel.save();
   const order = await Order.find({});
-  res.send({ order });
+  res.send(order );
   // const newStudent = [...orders, { userId, item }];
   // fs.writeFile("orders.json", JSON.stringify(newStudent, null, 1), (err) => {
   //   //writefile scrive i dati nel file orders.JSON
@@ -70,7 +70,7 @@ app.get("/api/orders/:userName", async (req, res) => {
     res.status(400).send("Specifica un utente");
   }
   const order = await Order.find({ userName });
-  res.send({ order });
+  res.send( order );
 });
 
 //------------------------------------------------------------------------------------------------
