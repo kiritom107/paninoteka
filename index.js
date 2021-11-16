@@ -32,7 +32,7 @@ app.get("", (req, res) => {
 
 app.get("/api/orders", async (req, res) => {
   const order = await Order.find({});
-  res.send({ order });
+  res.send( order);
 });
 
 //------------------------------------------------------------------------------------------------
