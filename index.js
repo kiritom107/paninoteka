@@ -93,7 +93,7 @@ app.post("/api/items", async (req, res) => {
   const itemModel = await new Item({ item });
   await itemModel.save();
   const items = await Item.find({});
-  res.send({ items });
+  res.send(items);
 
   // const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items
   // fs.writeFile("items.json", JSON.stringify(newStudent, null, 1), (err) => {
