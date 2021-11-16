@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "env-cmd -f .env nodemon index.js",
     "start": "node index.js",
-    "deploy": "git push heroku main"
+    "deploy": "git push https://git.heroku.com/paninoteka.git"
   },
   "repository": {
     "type": "git",

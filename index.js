@@ -77,8 +77,8 @@ app.get("/api/orders/:userName", async (req, res) => {
 //restituisce tutti gli items del dataBase
 
 app.get("/api/items", async (req, res) => {
-  const item = await Item.find({});
-  res.send({ item });
+  const items = await Item.find({});
+  res.send(items);
 });
 
 //------------------------------------------------------------------------------------------------
