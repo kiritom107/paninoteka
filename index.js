@@ -4,6 +4,11 @@ const { startMongoDB } = require("./services/db");
 const { Item } = require("./models/Item");
 const { Order } = require("./models/order");
 
+const TelegramBot = require('node-telegram-bot-api');
+const token = String(process.env.TELGRAM_BOT_TOKEN);
+const chatId = String(process.env.CHAT_ID);
+const bot = new TelegramBot(token);
+
 const express = require("express");
 const cors = require("cors");
 
@@ -23,7 +28,7 @@ let data = fs.readFileSync("orders.json");
 let orders = JSON.parse(data); //items è un array che contiene id e nome dei panini
 
 startMongoDB();
-app.get("", (req, res) => {
+app.get("", async (req, res) => {
   res.send("Paninoteka is online!");
 });
 
@@ -46,6 +51,9 @@ app.post("/api/orders", async (req, res) => {
   const orderModel = await new Order({ item, userName });
   await orderModel.save();
   const order = await Order.find({});
+
+  await bot.sendMessage(chatId, `Panino ${item} ordinato correttamente`);
+
   res.send({ order });
   // const newStudent = [...orders, { userId, item }];
   // fs.writeFile("orders.json", JSON.stringify(newStudent, null, 1), (err) => {
