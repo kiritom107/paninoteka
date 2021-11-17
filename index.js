@@ -54,7 +54,7 @@ app.post("/api/orders", async (req, res) => {
 
   await bot.sendMessage(chatId, `Panino ${item} ordinato correttamente`);
 
-  res.send({ order });
+  res.send(order);
   // const newStudent = [...orders, { userId, item }];
   // fs.writeFile("orders.json", JSON.stringify(newStudent, null, 1), (err) => {
   //   //writefile scrive i dati nel file orders.JSON
