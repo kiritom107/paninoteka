@@ -37,7 +37,7 @@ app.get("", async (req, res) => {
 
 app.get("/api/orders", async (req, res) => {
   const order = await Order.find({});
-  res.send({ order });
+  res.send( order);
 });
 
 //------------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ app.get("/api/orders/:userName", async (req, res) => {
     res.status(400).send("Specifica un utente");
   }
   const order = await Order.find({ userName });
-  res.send({ order });
+  res.send( order );
 });
 
 //------------------------------------------------------------------------------------------------
