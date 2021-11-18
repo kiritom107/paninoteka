@@ -45,7 +45,13 @@ app.get("/api/orders", async (req, res) => {
 
 app.post("/api/orders", async (req, res) => {
   const { item, userName } = req.body; // ES6 destructuring objects or arrays
-  if (!item) {
+  if (!item){
+    res.status(400).send("panino non inserito");
+  }
+  if(!userName){
+    res.status(400).send("nome utente non inserito");
+  }
+  if(!/[^a-zA-Z]/.test(userName)==false){
     res.status(400).send("Specificare articolo");
   }
   const orderModel = await new Order({ item, userName });
@@ -94,7 +100,7 @@ app.get("/api/items", async (req, res) => {
 //quindi in questo caso sarà una post che salva nel dataBase
 
 app.post("/api/items", async (req, res) => {
-  const { item } = req.body; //prendiamo nome dal body
+  const {item} = req.body; //prendiamo nome dal body
   if (!item) {
     res.status(400).send("Specificare un rticolo"); //indica un errore
   }
