@@ -84,7 +84,7 @@ app.get("/api/orders/:userName", async (req, res) => {
     res.status(400).send("Specifica un utente");
   }
   const order = await Order.find({ userName });
-  res.send( order );   ///  -----> da problemi se si aggiunge le { }
+  res.send(order);   ///  -----> da problemi se si aggiunge le { }
 });
 
 //------------------------------------------------------------------------------------------------
