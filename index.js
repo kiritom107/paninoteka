@@ -100,7 +100,7 @@ app.get("/api/items", async (req, res) => {
 //quindi in questo caso sarà una post che salva nel dataBase
 
 app.post("/api/items", async (req, res) => {
-  const {item} = req.body; //prendiamo nome dal body
+  const {item} = req.body; //prendiamo nome dalbody
   if (!item) {
     res.status(400).send("Specificare un rticolo"); //indica un errore
   }
