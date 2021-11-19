@@ -86,13 +86,11 @@ app.post(
 
 app.get("/api/orders/:userName",validateRequest, async (req, res) => {
   let { userName } = req.params;
-  
-  const errors = validationResult(req);
   userName = userName.toUpperCase();
   if (userName == "BERTOLI") {
     res
       .status(400).send(
-        { error: "MI DISPIACE PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTE-MURLO)" }
+        { error: "CI SCUSI, PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTEMURLO)" }
       );
   }
   if (!userName) {
@@ -119,7 +117,6 @@ app.post(
   [body("item").notEmpty().isString()],
   validateRequest,
   async (req, res) => {
-    const errors = validationResult(req);
     const { item } = req.body; //prendiamo nome dalbody
     if (!item) {
       res.status(400).send("Specificare un rticolo"); //indica un errore
@@ -140,7 +137,6 @@ app.post(
     // });
   }
 );
-
 //------------------------------------------------------------------------------------------------
 //parte la pagina sulla route principale.
 
