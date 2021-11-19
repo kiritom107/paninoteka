@@ -50,7 +50,7 @@ app.get("/api/orders", async (req, res) => {
 
 app.post(
   "/api/orders",
-  [body("item").notEmpty().isString(), body("userName").notEmpty().isString()],
+  [body("item").notEmpty().isString(), body("userName").notEmpty().isString().isAlpha()],
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
