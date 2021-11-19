@@ -22,6 +22,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const fs = require("fs");
+const { Console } = require("console");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -62,9 +63,7 @@ app.post(
     const orderModel = await new Order({ item, userName });
     await orderModel.save();
     const order = await Order.find({}); // p
-
     await bot.sendMessage(chatId, `Panino ${item} ordinato correttamente`);
-
     res.send(order);
     // const newStudent = [...orders, { userId, item }];
     // fs.writeFile("orders.json", JSON.stringify(newStudent, null, 1), (err) => {
@@ -84,19 +83,31 @@ app.post(
 //------------------------------------------------------------------------------------------------
 //stampa tutti  gli ordini che ha fatto un solo cliente
 
-app.get("/api/orders/:userName",validateRequest, async (req, res) => {
+app.get("/api/orders/:userName", validateRequest, async (req, res) => {
   let { userName } = req.params;
   userName = userName.toUpperCase();
   if (userName == "BERTOLI") {
     res
-      .status(400).send(
-        { error: "CI SCUSI, PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTEMURLO)" }
-      );
+      .status(400)
+      .send({
+        error:
+          "CI SCUSI, PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTEMURLO)",
+      });
   }
   if (!userName) {
-    res.status(400).send("Specifica un utente");
+    res.status(400).send({ error: "Specifica un utente" });
   }
+
   const order = await Order.find({ userName });
+  if(order.length==0){
+    res
+      .status(400)
+      .send({
+        error:
+          "QUESTO UTENTE NON HA EFFETUATO NESSUN ORDINE",
+      });
+  }
+
   res.send(order); ///  -----> da problemi se si aggiunge le { }
 });
 
@@ -119,7 +130,7 @@ app.post(
   async (req, res) => {
     const { item } = req.body; //prendiamo nome dalbody
     if (!item) {
-      res.status(400).send("Specificare un rticolo"); //indica un errore
+      res.status(400).send({ error: "Specificare un Articolo" }); //indica un errore
     }
     const itemModel = await new Item({ item });
     await itemModel.save();
@@ -137,6 +148,7 @@ app.post(
     // });
   }
 );
+
 //------------------------------------------------------------------------------------------------
 //parte la pagina sulla route principale.
 
