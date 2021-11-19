@@ -84,9 +84,8 @@ app.post(
 //------------------------------------------------------------------------------------------------
 //stampa tutti  gli ordini che ha fatto un solo cliente
 
-app.get("/api/orders/:userName", async (req, res) => {
+app.get("/api/orders/:userName",[param().notEmpty().isString().toUpperCase()], async (req, res) => {
   const { userName } = req.params;
-  userName.toUpperCase()
   console(userName);
   if (!userName) {
     res.status(400).send("Specifica un utente");
