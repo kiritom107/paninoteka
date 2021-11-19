@@ -84,9 +84,12 @@ app.post(
 //------------------------------------------------------------------------------------------------
 //stampa tutti  gli ordini che ha fatto un solo cliente
 
-app.get("/api/orders/:userName",[param().notEmpty().isString().toUpperCase()], async (req, res) => {
-  const { userName } = req.params;
-  console(userName);
+app.get("/api/orders/:userName", async (req, res) => {
+  let { userName } = req.params;
+  userName = userName.toUpperCase()
+  if (userName=="BERTOLI") {
+    res.status(400).send("MI DISPIACE PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTE-MURLO)");
+  }
   if (!userName) {
     res.status(400).send("Specifica un utente");
   }
@@ -107,6 +110,7 @@ app.get("/api/items", async (req, res) => {
 //quindi in questo caso sarà una post che salva nel dataBase
 
 app.post("/api/items",[body("item").notEmpty().isString()], async (req, res) => {
+  const errors = validationResult(req);
   const { item } = req.body; //prendiamo nome dalbody
   if (!item) {
     res.status(400).send("Specificare un rticolo"); //indica un errore
