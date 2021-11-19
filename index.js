@@ -84,14 +84,15 @@ app.post(
 //------------------------------------------------------------------------------------------------
 //stampa tutti  gli ordini che ha fatto un solo cliente
 
-app.get("/api/orders/:userName", async (req, res) => {
+app.get("/api/orders/:userName",validateRequest, async (req, res) => {
   let { userName } = req.params;
+  
+  const errors = validationResult(req);
   userName = userName.toUpperCase();
   if (userName == "BERTOLI") {
     res
-      .status(400)
-      .send(
-        "MI DISPIACE PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTE-MURLO)"
+      .status(400).send(
+        { error: "MI DISPIACE PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTE-MURLO)" }
       );
   }
   if (!userName) {
