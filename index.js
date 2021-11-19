@@ -1,10 +1,15 @@
+// risolve in automatico il problema della gestione degli errori asincroni in express
+require("express-async-errors");
+
+// serve per effettuare la validazione dei dati senza sforzo
+const { body, validationResult } = require("express-validator");
 //------------------------------------------------------------------------------------------------
 //dichiarazione variabili d'ambiente
 const { startMongoDB } = require("./services/db");
 const { Item } = require("./models/Item");
 const { Order } = require("./models/order");
 
-const TelegramBot = require('node-telegram-bot-api');
+const TelegramBot = require("node-telegram-bot-api");
 const token = String(process.env.TELGRAM_BOT_TOKEN);
 const chatId = String(process.env.CHAT_ID);
 const bot = new TelegramBot(token);
@@ -37,43 +42,44 @@ app.get("", async (req, res) => {
 
 app.get("/api/orders", async (req, res) => {
   const order = await Order.find({});
-  res.send( order);
+  res.send(order);
 });
 
 //------------------------------------------------------------------------------------------------
 //aggiungi un ordine nel database
 
-app.post("/api/orders", async (req, res) => {
-  const { item, userName } = req.body; // ES6 destructuring objects or arrays
-  if (!item){
-    res.status(400).send("panino non inserito");
+app.post(
+  "/api/orders",
+  [body("item").notEmpty().isString(), body("userName").notEmpty().isString()],
+  async (req, res) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { item, userName } = req.body; // ES6 destructuring objects or arrays
+    const orderModel = await new Order({ item, userName });
+    await orderModel.save();
+    const order = await Order.find({}); // p
+
+    await bot.sendMessage(chatId, `Panino ${item} ordinato correttamente`);
+
+    res.send(order);
+    // const newStudent = [...orders, { userId, item }];
+    // fs.writeFile("orders.json", JSON.stringify(newStudent, null, 1), (err) => {
+    //   //writefile scrive i dati nel file orders.JSON
+    //   if (err) {
+    //     console.log("errore", err);
+    //     res.status(500).send("Errore durante la scrittura del file");
+    //   }
+
+    //  main()
+
+    // res.send({ userId, item });
+    // });
   }
-  if(!userName){
-    res.status(400).send("nome utente non inserito");
-  }
-  if(!/[^a-zA-Z]/.test(userName)==false){
-    res.status(400).send("Specificare articolo");
-  }
-  const orderModel = await new Order({ item, userName });
-  await orderModel.save();
-  const order = await Order.find({}); // p
-
-  await bot.sendMessage(chatId, `Panino ${item} ordinato correttamente`);
-
-  res.send(order);  
-  // const newStudent = [...orders, { userId, item }];
-  // fs.writeFile("orders.json", JSON.stringify(newStudent, null, 1), (err) => {
-  //   //writefile scrive i dati nel file orders.JSON
-  //   if (err) {
-  //     console.log("errore", err);
-  //     res.status(500).send("Errore durante la scrittura del file");
-  //   }
-
-  //  main()
-
-  // res.send({ userId, item });
-  // });
-});
+);
 
 //------------------------------------------------------------------------------------------------
 //stampa tutti  gli ordini che ha fatto un solo cliente
@@ -84,7 +90,7 @@ app.get("/api/orders/:userName", async (req, res) => {
     res.status(400).send("Specifica un utente");
   }
   const order = await Order.find({ userName });
-  res.send(order);   ///  -----> da problemi se si aggiunge le { }
+  res.send(order); ///  -----> da problemi se si aggiunge le { }
 });
 
 //------------------------------------------------------------------------------------------------
@@ -100,7 +106,7 @@ app.get("/api/items", async (req, res) => {
 //quindi in questo caso sarà una post che salva nel dataBase
 
 app.post("/api/items", async (req, res) => {
-  const {item} = req.body; //prendiamo nome dalbody
+  const { item } = req.body; //prendiamo nome dalbody
   if (!item) {
     res.status(400).send("Specificare un rticolo"); //indica un errore
   }
