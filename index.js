@@ -50,7 +50,7 @@ app.get("/api/orders", async (req, res) => {
 
 app.post(
   "/api/orders",
-  [body("item").notEmpty().isString(), body("userName").notEmpty().isString().isAlpha()],
+[body("item").notEmpty().isString().toUpperCase(), body("userName").notEmpty().isString().isAlpha().toUpperCase()],
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
@@ -86,6 +86,8 @@ app.post(
 
 app.get("/api/orders/:userName", async (req, res) => {
   const { userName } = req.params;
+  userName.toUpperCase()
+  console(userName);
   if (!userName) {
     res.status(400).send("Specifica un utente");
   }
@@ -105,7 +107,7 @@ app.get("/api/items", async (req, res) => {
 //è una route per aggiungere un tipo di panino nel dataBase paninoteka/item
 //quindi in questo caso sarà una post che salva nel dataBase
 
-app.post("/api/items", async (req, res) => {
+app.post("/api/items",[body("item").notEmpty().isString()], async (req, res) => {
   const { item } = req.body; //prendiamo nome dalbody
   if (!item) {
     res.status(400).send("Specificare un rticolo"); //indica un errore
