@@ -116,6 +116,7 @@ app.get("/api/items", async (req, res) => {
 app.post(
   "/api/items",
   [body("item").notEmpty().isString()],
+  validateRequest,
   async (req, res) => {
     const errors = validationResult(req);
     const { item } = req.body; //prendiamo nome dalbody
