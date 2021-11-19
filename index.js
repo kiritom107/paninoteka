@@ -56,7 +56,7 @@ app.post("/api/orders", async (req, res) => {
   }
   const orderModel = await new Order({ item, userName });
   await orderModel.save();
-  const order = await Order.find({});
+  const order = await Order.find({}); // p
 
   await bot.sendMessage(chatId, `Panino ${item} ordinato correttamente`);
 
