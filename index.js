@@ -1,8 +1,10 @@
 // risolve in automatico il problema della gestione degli errori asincroni in express
 require("express-async-errors");
 
+const { validateRequest } = require("./middlwares/validate-request");
+
 // serve per effettuare la validazione dei dati senza sforzo
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 //------------------------------------------------------------------------------------------------
 //dichiarazione variabili d'ambiente
 const { startMongoDB } = require("./services/db");
@@ -50,14 +52,12 @@ app.get("/api/orders", async (req, res) => {
 
 app.post(
   "/api/orders",
-[body("item").notEmpty().isString().toUpperCase(), body("userName").notEmpty().isString().isAlpha().toUpperCase()],
+  [
+    body("item").notEmpty().isString().toUpperCase(),
+    body("userName").notEmpty().isString().isAlpha().toUpperCase(),
+  ],
+  validateRequest,
   async (req, res) => {
-    // Finds the validation errors in this request and wraps them in an object with handy functions
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const { item, userName } = req.body; // ES6 destructuring objects or arrays
     const orderModel = await new Order({ item, userName });
     await orderModel.save();
@@ -86,9 +86,13 @@ app.post(
 
 app.get("/api/orders/:userName", async (req, res) => {
   let { userName } = req.params;
-  userName = userName.toUpperCase()
-  if (userName=="BERTOLI") {
-    res.status(400).send("MI DISPIACE PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTE-MURLO)");
+  userName = userName.toUpperCase();
+  if (userName == "BERTOLI") {
+    res
+      .status(400)
+      .send(
+        "MI DISPIACE PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTE-MURLO)"
+      );
   }
   if (!userName) {
     res.status(400).send("Specifica un utente");
@@ -109,27 +113,31 @@ app.get("/api/items", async (req, res) => {
 //è una route per aggiungere un tipo di panino nel dataBase paninoteka/item
 //quindi in questo caso sarà una post che salva nel dataBase
 
-app.post("/api/items",[body("item").notEmpty().isString()], async (req, res) => {
-  const errors = validationResult(req);
-  const { item } = req.body; //prendiamo nome dalbody
-  if (!item) {
-    res.status(400).send("Specificare un rticolo"); //indica un errore
-  }
-  const itemModel = await new Item({ item });
-  await itemModel.save();
-  const items = await Item.find({});
-  res.send(items);
+app.post(
+  "/api/items",
+  [body("item").notEmpty().isString()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    const { item } = req.body; //prendiamo nome dalbody
+    if (!item) {
+      res.status(400).send("Specificare un rticolo"); //indica un errore
+    }
+    const itemModel = await new Item({ item });
+    await itemModel.save();
+    const items = await Item.find({});
+    res.send(items);
 
-  // const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items
-  // fs.writeFile("items.json", JSON.stringify(newStudent, null, 1), (err) => {
-  //   //wriitefile scrive i dati nel file items.JSON
-  //   if (err) {
-  //     console.log("errore", err);
-  //     res.status(500).send("Errore durante la scrittura del file");
-  //   }
-  //   res.send({ student: newStudent });
-  // });
-});
+    // const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items
+    // fs.writeFile("items.json", JSON.stringify(newStudent, null, 1), (err) => {
+    //   //wriitefile scrive i dati nel file items.JSON
+    //   if (err) {
+    //     console.log("errore", err);
+    //     res.status(500).send("Errore durante la scrittura del file");
+    //   }
+    //   res.send({ student: newStudent });
+    // });
+  }
+);
 
 //------------------------------------------------------------------------------------------------
 //parte la pagina sulla route principale.
