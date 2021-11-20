@@ -91,7 +91,7 @@ app.get("/api/orders/:userName", validateRequest, async (req, res) => {
       .status(400)
       .send({
         error:
-          "CI SCUSI, PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTEMURLO)",
+          "MI SCUSI, PER LEI NIENTE PANINI (COSI IMPARA A MANDARMI A MONTEMURLO)",
       });
   }
   if (!userName) {
