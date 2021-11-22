@@ -35,6 +35,7 @@ let items = JSON.parse(rawdata); //items è un array che contiene id e nome dei 
 let data = fs.readFileSync("orders.json");
 let orders = JSON.parse(data); //items è un array che contiene id e nome dei panini
 
+
 startMongoDB();
 app.get("", async (req, res) => {
   res.send("Paninoteka is online!");
@@ -138,12 +139,22 @@ app.post(
     if (!descrizione) {
       res.status(400).send({ error: "Specificare una descrizione del panino" }); //indica un errore
     }
+    const tutti = await Item.find({});
+ 
+    for(const element of tutti){
+      if(item === element.item){
+        res.status(400).send({ error: "esiste gia il panino" });
+      }
+    }
+
     const itemModel = await new Item({ item , descrizione });
     await itemModel.save();
     const items = await Item.find({});
     res.send(items);
 
-    // const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items
+  }
+);
+ // const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items
     // fs.writeFile("items.json", JSON.stringify(newStudent, null, 1), (err) => {
     //   //wriitefile scrive i dati nel file items.JSON
     //   if (err) {
@@ -152,9 +163,6 @@ app.post(
     //   }
     //   res.send({ student: newStudent });
     // });
-  }
-);
-
 //------------------------------------------------------------------------------------------------
 //parte la pagina sulla route principale.
 
