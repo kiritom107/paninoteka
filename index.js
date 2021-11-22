@@ -128,11 +128,12 @@ app.post(
   [body("item").notEmpty().isString()],
   validateRequest,
   async (req, res) => {
-    const { item } = req.body; //prendiamo nome dalbody
+    const { item , description} = req.body; //prendiamo nome dalbody
     if (!item) {
       res.status(400).send({ error: "Specificare un Articolo" }); //indica un errore
     }
-    const itemModel = await new Item({ item });
+    console.log(description)
+    const itemModel = await new Item({ item , description });
     await itemModel.save();
     const items = await Item.find({});
     res.send(items);
