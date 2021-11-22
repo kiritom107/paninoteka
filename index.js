@@ -125,15 +125,20 @@ app.get("/api/items", async (req, res) => {
 
 app.post(
   "/api/items",
-  [body("item").notEmpty().isString()],
+  [
+    body("item").notEmpty().isString(),
+    body("descrizione").notEmpty().isString()
+  ],
   validateRequest,
   async (req, res) => {
-    const { item , description} = req.body; //prendiamo nome dalbody
+    const { item , descrizione} = req.body; //prendiamo nome dalbody
     if (!item) {
       res.status(400).send({ error: "Specificare un Articolo" }); //indica un errore
     }
-    console.log(description)
-    const itemModel = await new Item({ item , description });
+    if (!descrizione) {
+      res.status(400).send({ error: "Specificare una descrizione del panino" }); //indica un errore
+    }
+    const itemModel = await new Item({ item , descrizione });
     await itemModel.save();
     const items = await Item.find({});
     res.send(items);
