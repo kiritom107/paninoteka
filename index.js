@@ -127,7 +127,7 @@ app.get("/api/items", async (req, res) => {
 app.post(
   "/api/items",
   [
-    body("item").notEmpty().isString(),
+    body("item").notEmpty().isString().trim(),
     body("descrizione").notEmpty().isString()
   ],
   validateRequest,
@@ -143,7 +143,7 @@ app.post(
  
     for(const element of tutti){
       if(item === element.item){
-        res.status(400).send({ error: "esiste gia il panino" });
+        return res.status(400).send({ error: "esiste gia il panino" });
       }
     }
 
