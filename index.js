@@ -181,9 +181,8 @@ app.get("/api/delete", async (req, res) => {
 });
 
 
-//
-app.delete('/api/delete/:id', (req, res, next) => {
-  console.log({item: req.params.id})
+// cancella un singolo panino
+app.delete('/api/delete/item/:id', (req, res, next) => {
   Item.deleteOne({item: req.params.id}).then(
     () => {
       res.status(200).json({
@@ -198,6 +197,21 @@ app.delete('/api/delete/:id', (req, res, next) => {
     }
   );
 });
+
+//cancella tutti panini
+app.delete('/api/delete/item', async (req, res, next) =>  {
+  console.log("sono dentro")
+  await Item.deleteMany({})
+  res.send("deleted")
+}); 
+
+//cancella tutti ordini
+app.delete('/api/delete/orders', async (req, res, next) =>  {
+  console.log("sono dentro")
+  await Order.deleteMany({})
+  res.send("deleted")
+}); 
+
 
 
 
