@@ -55,7 +55,7 @@ app.post(
   "/api/orders",
   [
     body("item").notEmpty().isString().toUpperCase(),
-    body("userName").notEmpty().isString().isAlpha().toUpperCase(),
+    body("userName").notEmpty().isString().isAlpha().toUpperCase().trim(),
   ],
   validateRequest,
   async (req, res) => {
