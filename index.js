@@ -172,13 +172,33 @@ app.listen(PORT, () => {
 
 //------------------------------------------------------------------------------------------------
 
-// Compiti per oggi 11/11/21
+app.get("/api/delete", async (req, res) => {
+  const tutti = await Item.find({});
+    for(const element of tutti){
+      console.log(element.item)
+    }
+   res.send("Ok")
+});
 
-// Installare sul pc Mongo (mac probabilmente usa brew)
-// Installare Robot3T (https://robomongo.org/)
-// Provare a collegarsi a mongo usando Mongoose (https://mongoosejs.com/)
-//      - npm i mongoose
-//      - mongoose.connect('mongodb://localhost:27017/paninoteka');
-//      - dentro paninoteka avrete 2 collections:
-//          - orders
-//          - items
+
+//
+app.delete('/api/delete/:id', (req, res, next) => {
+  console.log({item: req.params.id})
+  Item.deleteOne({item: req.params.id}).then(
+    () => {
+      res.status(200).json({
+        message: 'Deleted!'
+      });
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
+});
+
+
+
+// Compiti per oggi 11/11/21
