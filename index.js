@@ -189,7 +189,6 @@ app.delete("/api/delete/item/:id", async (req, res, next) => {
 
 //cancella tutti panini
 app.delete("/api/delete/item", async (req, res, next) => {
-  console.log("sono dentro");
   await Item.deleteMany({});
   res.send("deleted");
 });
@@ -198,9 +197,10 @@ app.delete("/api/delete/item", async (req, res, next) => {
 
 //cancella tutti ordini
 app.delete("/api/delete/orders", async (req, res, next) => {
-  console.log("sono dentro");
   await Order.deleteMany({});
-  res.send("deleted");
+  res.status(200).json({
+    message: "Deleted!",
+  });
 });
 
 //------------------------------------------------------------------------------------------------
