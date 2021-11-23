@@ -190,7 +190,9 @@ app.delete("/api/delete/item/:id", async (req, res, next) => {
 //cancella tutti panini
 app.delete("/api/delete/item", async (req, res, next) => {
   await Item.deleteMany({});
-  res.send("deleted");
+  res.status(200).json({
+    message: "Deleted!",
+  });
 });
 
 //------------------------------------------------------------------------------------------------
@@ -223,7 +225,7 @@ app.delete("/api/delete/orders/:userName/:item", async (req, res, next) => {
           error: error,
         });
       });
-  } else {
+  }else{
     res
       .status(400)
       .send({ error: "il ordine associato a questo utente non esiste" }); //indica un errore
