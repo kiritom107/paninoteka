@@ -54,8 +54,8 @@ app.get("/api/orders", async (req, res) => {
 app.post(
   "/api/orders",
   [
-    body("item").notEmpty().isString().toUpperCase().trim().isAlpha(),
-    body("userName").notEmpty().isString().toUpperCase().trim().isAlpha(),
+    body("item").notEmpty(),
+    body("userName").notEmpty().isString().isAlpha().toUpperCase().trim(),
   ],
   validateRequest,
   async (req, res) => {
