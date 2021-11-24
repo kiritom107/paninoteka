@@ -56,8 +56,8 @@ app.get("/api/orders", async (req, res) => {
 app.post(
   "/api/orders",
   [
-    body("item").notEmpty().isString().toUpperCase().trim().isAlpha(),
-    body("userName").notEmpty().isString().toUpperCase().trim().isAlpha(),
+    body("item").notEmpty(),
+    body("userName").notEmpty().isString().isAlpha().toUpperCase().trim(),
   ],
   validateRequest,
   async (req, res) => {
@@ -204,6 +204,19 @@ app.delete("/api/delete/orders", async (req, res, next) => {
   await Order.deleteMany({});
   res.status(200).json({
     message: "Deleted!",
+  });
+});
+
+//------------------------------------------------------------------------------------------------
+
+app.delete("/api/delete/singolUtente/:id", async (req, res, next) => {
+  
+  await Order.find({
+    userName: req.params.id
+  }).deleteMany({});
+  
+  res.status(200).json({
+    message: "Deleted "+req.params.id +" ordes",
   });
 });
 
