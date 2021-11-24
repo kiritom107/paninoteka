@@ -207,6 +207,19 @@ app.delete("/api/delete/orders", async (req, res, next) => {
 
 //------------------------------------------------------------------------------------------------
 
+app.delete("/api/delete/singolUtente/:id", async (req, res, next) => {
+  
+  await Order.find({
+    userName: req.params.id
+  }).deleteMany({});
+  
+  res.status(200).json({
+    message: "Deleted "+req.params.id +" ordes",
+  });
+});
+
+//------------------------------------------------------------------------------------------------
+
 // cancella un singolo order
 app.delete("/api/delete/orders/:userName/:item", async (req, res, next) => {
   const order = await Order.find({
