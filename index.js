@@ -115,8 +115,13 @@ app.get("/api/items", async (req, res) => {
   res.send(items);
 });
 const { lookup } = require('geoip-lite');
+
+
 app.get("/api/ip", async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  require('dns').reverse(req.socket.remoteAddress, function(err, domains) {
+    console.log(domains);
+  });
   console.log(ip); // ip address of the user
   res.send(lookup(ip)); // location of the user
 });
