@@ -61,7 +61,7 @@ app.post(
   validateRequest,
   async (req, res) => {
     const { item, userName, prezzo } = req.body; // ES6 destructuring objects or arrays
-    const orderModel = await new Order({ item, userName ,prezzo});
+    const orderModel = await new Order({ item, userName, prezzo });
     await orderModel.save();
     const order = await Order.find({}); // p
     await bot.sendMessage(chatId, `Panino ${item} ordinato correttamente`);
@@ -128,28 +128,27 @@ app.post(
   ],
   validateRequest,
   async (req, res) => {
-    let { item, descrizione , prezzo } = req.body; //prendiamo nome dalbody
+    let { item, descrizione, prezzo } = req.body; //prendiamo nome dalbody
     if (!item) {
-      return res.status(400).send({ error: "Specificare un Articolo" }); //indica un errore
-    }
-    if (!descrizione) {
-      return res.status(400).send({ error: "Specificare una descrizione del panino" }); //indica un errore
-    }
-    if (!prezzo) {
-      return res.status(400).send({ error: "Specificare costo del panino" }); //indica un errore
-    }
-    const tutti = await Item.find({});
+      res.status(400).send({ error: "Specificare un Articolo" }); //indica un errore
+    } else if (!descrizione) {
+      res.status(400).send({ error: "Specificare una descrizione del panino" }); //indica un errore
+    } else if (!prezzo) {
+      res.status(400).send({ error: "Specificare costo del panino" }); //indica un errore
+    } else {
+      const tutti = await Item.find({});
 
-    for (const element of tutti) {
-      if (item === element.item) {
-        return res.status(400).send({ error: "esiste gia il panino" });
+      for (const element of tutti) {
+        if (item === element.item) {
+          return res.status(400).send({ error: "esiste gia il panino" });
+        }
       }
+      prezzo = Math.round(prezzo * 100) / 100.0;
+      const itemModel = await new Item({ item, descrizione, prezzo });
+      await itemModel.save();
+      const items = await Item.find({});
+      res.send(items);
     }
-    prezzo=Math.round(prezzo*100)/100.0;
-    const itemModel = await new Item({ item, descrizione , prezzo });
-    await itemModel.save();
-    const items = await Item.find({});
-    res.send(items);
   }
 );
 // const newStudent = [...items, { id, nome }]; //ES6 destructuring array aggiunge oggetto al items
@@ -214,11 +213,11 @@ app.delete("/api/delete/orders", async (req, res, next) => {
 
 app.delete("/api/delete/singolUtente/:id", async (req, res, next) => {
   await Order.find({
-    userName: req.params.id.toUpperCase()
+    userName: req.params.id.toUpperCase(),
   }).deleteMany({});
-  
+
   res.status(200).json({
-    message: "Deleted "+req.params.id +" ordes",
+    message: "Deleted " + req.params.id + " ordes",
   });
 });
 
@@ -242,7 +241,7 @@ app.delete("/api/delete/orders/:userName/:item", async (req, res, next) => {
           error: error,
         });
       });
-  }else{
+  } else {
     res
       .status(400)
       .send({ error: "il ordine associato a questo utente non esiste" }); //indica un errore
@@ -251,6 +250,5 @@ app.delete("/api/delete/orders/:userName/:item", async (req, res, next) => {
 
 //------------------------------------------------------------------------------------------------
 
-
 // un utente puo ordinare piu cose contemporaneamente
-// 
+//
