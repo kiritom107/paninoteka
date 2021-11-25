@@ -18,8 +18,6 @@ const bot = new TelegramBot(token);
 
 const express = require("express");
 const cors = require("cors");
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 const bodyParser = require("body-parser");
 
@@ -210,9 +208,10 @@ app.delete("/api/delete/orders", async (req, res, next) => {
 //------------------------------------------------------------------------------------------------
 
 app.delete("/api/delete/singolUtente/:id", async (req, res, next) => {
-  
+  let { userName } = req.params;
+  userName = userName.toUpperCase();
   await Order.find({
-    userName: req.params.id
+    userName
   }).deleteMany({});
   
   res.status(200).json({
@@ -249,35 +248,6 @@ app.delete("/api/delete/orders/:userName/:item", async (req, res, next) => {
 
 //------------------------------------------------------------------------------------------------
 
-const users = []
 
-app.get('/users', (req, res) => {
-  res.json(users)
-})
-
-app.post('/users', async (req, res) => {
-  try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    const user = { name: req.body.name, password: hashedPassword }
-    users.push(user)
-    res.status(201).send()
-  } catch {
-    res.status(500).send()
-  }
-})
-
-app.post('/users/login', async (req, res) => {
-  const user = users.find(user => user.name === req.body.name)
-  if (user == null) {
-    return res.status(400).send('Cannot find user')
-  }
-  try {
-    if(await bcrypt.compare(req.body.password, user.password)) {
-      res.send('Success')
-    } else {
-      res.send('Not Allowed')
-    }
-  } catch {
-    res.status(500).send()
-  }
-})
+// un utente puo ordinare piu cose contemporaneamente
+// 
