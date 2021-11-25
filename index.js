@@ -208,6 +208,7 @@ app.delete("/api/delete/orders", async (req, res, next) => {
 //------------------------------------------------------------------------------------------------
 
 app.delete("/api/delete/singolUtente/:id", async (req, res, next) => {
+  console.log("Im in")
   let { userName } = req.params;
   userName = userName.toUpperCase();
   await Order.find({
