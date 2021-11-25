@@ -90,7 +90,7 @@ app.get("/api/orders/:userName", validateRequest, async (req, res) => {
   if (userName == "BERTOLI") {
     res.status(400).send({
       error:
-        "MI SCUSI, PER LEI NIENTE PANINI (COSI IMPARA A MANDARMI A MONTEMURLO)",
+        "MI SCUSI, PER LEI NIENTE PANINI (COSI IMPARA A MANDARCI A MONTEMURLO)",
     });
   }
   if (!userName) {
@@ -130,13 +130,13 @@ app.post(
   async (req, res) => {
     let { item, descrizione , prezzo } = req.body; //prendiamo nome dalbody
     if (!item) {
-      res.status(400).send({ error: "Specificare un Articolo" }); //indica un errore
+      return res.status(400).send({ error: "Specificare un Articolo" }); //indica un errore
     }
     if (!descrizione) {
-      res.status(400).send({ error: "Specificare una descrizione del panino" }); //indica un errore
+      return res.status(400).send({ error: "Specificare una descrizione del panino" }); //indica un errore
     }
     if (!prezzo) {
-      res.status(400).send({ error: "Specificare costo del panino" }); //indica un errore
+      return res.status(400).send({ error: "Specificare costo del panino" }); //indica un errore
     }
     const tutti = await Item.find({});
 
