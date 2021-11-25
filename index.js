@@ -55,7 +55,7 @@ app.post(
   "/api/orders",
   [
     body("item").notEmpty(),
-    body("userName").notEmpty().isString().isAlpha().toUpperCase().trim(),
+    body("userName").notEmpty().isString().trim().isAlpha().toUpperCase(),
     body("prezzo").notEmpty().isNumeric(),
   ],
   validateRequest,
