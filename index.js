@@ -123,15 +123,19 @@ app.post(
   [
     body("item").notEmpty().isString().trim(),
     body("descrizione").notEmpty().isString(),
+    body("prezzo").notEmpty().isNumeric(),
   ],
   validateRequest,
   async (req, res) => {
-    const { item, descrizione } = req.body; //prendiamo nome dalbody
+    let { item, descrizione , prezzo } = req.body; //prendiamo nome dalbody
     if (!item) {
       res.status(400).send({ error: "Specificare un Articolo" }); //indica un errore
     }
     if (!descrizione) {
       res.status(400).send({ error: "Specificare una descrizione del panino" }); //indica un errore
+    }
+    if (!prezzo) {
+      res.status(400).send({ error: "Specificare costo del panino" }); //indica un errore
     }
     const tutti = await Item.find({});
 
@@ -140,8 +144,8 @@ app.post(
         return res.status(400).send({ error: "esiste gia il panino" });
       }
     }
-
-    const itemModel = await new Item({ item, descrizione });
+    prezzo=Math.round(prezzo*100)/100.0;
+    const itemModel = await new Item({ item, descrizione , prezzo });
     await itemModel.save();
     const items = await Item.find({});
     res.send(items);
@@ -165,7 +169,7 @@ app.listen(PORT, () => {
 
 //------------------------------------------------------------------------------------------------
 
-// cancella un singolo panino
+// cancella un singolo panino  tramine nome
 app.delete("/api/delete/item/:id", async (req, res, next) => {
   const items = await Item.find({ item: req.params.id });
   if (items.length > 0) {

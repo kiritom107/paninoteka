@@ -9,6 +9,10 @@ const itemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  prezzo: {
+    type: Number,
+    required: true,
+  },
 });
 
 const Item = mongoose.model("Item", itemSchema);
