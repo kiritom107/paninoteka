@@ -115,6 +115,12 @@ app.get("/api/items", async (req, res) => {
   res.send(items);
 });
 
+app.get("/api/ip", async (req, res) => {
+  const items = req.ip;
+  res.send(items);
+});
+
+
 //------------------------------------------------------------------------------------------------
 //è una route per aggiungere un tipo di panino nel dataBase paninoteka/item
 //quindi in questo caso sarà una post che salva nel dataBase
