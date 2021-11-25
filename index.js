@@ -56,11 +56,12 @@ app.post(
   [
     body("item").notEmpty(),
     body("userName").notEmpty().isString().isAlpha().toUpperCase().trim(),
+    body("prezzo").notEmpty().isNumeric(),
   ],
   validateRequest,
   async (req, res) => {
-    const { item, userName } = req.body; // ES6 destructuring objects or arrays
-    const orderModel = await new Order({ item, userName });
+    const { item, userName, prezzo } = req.body; // ES6 destructuring objects or arrays
+    const orderModel = await new Order({ item, userName ,prezzo});
     await orderModel.save();
     const order = await Order.find({}); // p
     await bot.sendMessage(chatId, `Panino ${item} ordinato correttamente`);
